@@ -28,6 +28,7 @@ io.on('connection', (client) => {
 
     callback(usuarios.getUsuariosSala(mensaje.sala))
     
+    client.broadcast.to(mensaje.sala).emit('enviarMensaje',crearMensaje('Admin',`${mensaje.nombre} entró`));
 
    });
 
@@ -39,13 +40,16 @@ io.on('connection', (client) => {
 
    })
 
-   client.on('enviarMensaje',data=>{
+   client.on('enviarMensaje',(data,callback)=>{
 
     let usuario = usuarios.getUsuario(client.id);
 
     let mensaje = crearMensaje(usuario.nombre,data.mensaje);
 
     client.broadcast.to(usuario.sala).emit('enviarMensaje',mensaje);
+
+
+    callback(mensaje)
    });
 
 
